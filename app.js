@@ -4,7 +4,17 @@ const todoList = document.getElementById('todo-list');
 
 function addTask() {
     if (inputField.value.trim() !== "") {
+        const now = new Date();
+        const timestampText = now.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
         const newTask = document.createElement('li');
+        const timestamp = document.createElement('span');
+        timestamp.textContent = timestampText;
+        timestamp.className = 'timestamp';
 
         // Container for task content it will hold checkbox and task text
         const contentWrapper = document.createElement('div');
@@ -22,6 +32,7 @@ function addTask() {
         taskText.textContent = inputField.value;
 
         // we put the checkbox and task text in the content wrapper
+        contentWrapper.appendChild(timestamp);
         contentWrapper.appendChild(checkbox);
         contentWrapper.appendChild(taskText);
 

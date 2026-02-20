@@ -51,13 +51,16 @@ button {
     font-weight: bold;
     transition: background-color 0.2s;
 }
+
 .delete-btn {
     background-color: red;
     color: white;
 }
+
 .delete-btn:hover {
     background-color: darkred;
 }
+
 button:hover {
     background-color: #218838;
 }
@@ -85,4 +88,11 @@ li {
 .completed span {
     text-decoration: line-through;
     color: #888;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: #888;
+    margin-left: auto;
+    font-style: italic;
 }
