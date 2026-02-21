@@ -173,6 +173,20 @@ li:hover {
     opacity: 0.8;
 }
 
+.edit-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    background: white;
+    color: var(--text-main);
+}
+
 /* EMPTY STATES - The "Advanced" CSS way */
 ul:not(:has(li)) {
     display: flex;

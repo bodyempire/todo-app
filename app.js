@@ -21,7 +21,7 @@ function saveData() {
     // 1. this is where we grab all tasks from the Todo List
     todoList.querySelectorAll('li').forEach(li => {
         todos.push({
-            text: li.querySelector('.task-content span').textContent,
+            text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
             done: false
         });
@@ -30,7 +30,7 @@ function saveData() {
     // 2. this is where we grab all tasks from the History List
     historyList.querySelectorAll('li').forEach(li => {
         history.push({
-            text: li.querySelector('.task-content span').textContent,
+            text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
             done: true
         });
@@ -67,6 +67,36 @@ function renderTask(text, time, isDone) {
 
     const taskText = document.createElement('span');
     taskText.textContent = text;
+    taskText.className = 'task-text';
+
+    // DOUBLE CLICK TO EDIT
+    taskText.addEventListener('dblclick', function () {
+        const editInput = document.createElement('input');
+        editInput.type = 'text';
+        editInput.value = taskText.textContent;
+        editInput.className = 'edit-input';
+
+        const saveEdit = () => {
+            const newText = editInput.value.trim();
+            if (newText !== "") {
+                taskText.textContent = newText;
+            }
+            editInput.replaceWith(taskText);
+            saveData();
+        };
+
+        editInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveEdit();
+            if (e.key === 'Escape') {
+                editInput.replaceWith(taskText);
+            }
+        });
+
+        editInput.addEventListener('blur', saveEdit);
+
+        taskText.replaceWith(editInput);
+        editInput.focus();
+    });
 
     contentWrapper.appendChild(timestamp);
     contentWrapper.appendChild(checkbox);
