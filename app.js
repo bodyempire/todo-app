@@ -2,13 +2,15 @@ const inputField = document.getElementById('todo-input');
 const addButton = document.getElementById('add-btn');
 const todoList = document.getElementById('todo-list');
 const historyList = document.getElementById('history-list');
+const prioritySelect = document.getElementById('priority-select');
 
 function addTask() {
     if (inputField.value.trim() !== "") {
         const now = new Date();
         const time = now.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const priority = prioritySelect.value;
 
-        renderTask(inputField.value, time, false);
+        renderTask(inputField.value, time, false, priority);
         saveData();
         inputField.value = '';
     }
@@ -23,7 +25,8 @@ function saveData() {
         todos.push({
             text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
-            done: false
+            done: false,
+            priority: li.dataset.priority
         });
     });
 
@@ -32,7 +35,8 @@ function saveData() {
         history.push({
             text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
-            done: true
+            done: true,
+            priority: li.dataset.priority
         });
     });
 
@@ -40,9 +44,13 @@ function saveData() {
     localStorage.setItem('todosData', JSON.stringify({ todos, history }));
 }
 
-function renderTask(text, time, isDone) {
+function renderTask(text, time, isDone, priority = 'medium') {
     const newTask = document.createElement('li');
     if (isDone) newTask.classList.add('completed');
+
+    // PRIORITY CLASS & DATA
+    newTask.classList.add(`prio-${priority}`);
+    newTask.dataset.priority = priority;
 
     const timestamp = document.createElement('span');
     timestamp.textContent = time;
@@ -98,9 +106,15 @@ function renderTask(text, time, isDone) {
         editInput.focus();
     });
 
+    // PRIORITY BADGE
+    const prioBadge = document.createElement('span');
+    prioBadge.textContent = priority.toUpperCase();
+    prioBadge.className = 'prio-badge';
+
     contentWrapper.appendChild(timestamp);
     contentWrapper.appendChild(checkbox);
     contentWrapper.appendChild(taskText);
+    contentWrapper.appendChild(prioBadge);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'x';
@@ -127,10 +141,10 @@ function loadData() {
         const { todos, history } = JSON.parse(savedData);
 
         // Rebuild the todo list
-        todos.forEach(task => renderTask(task.text, task.time, false));
+        todos.forEach(task => renderTask(task.text, task.time, false, task.priority));
 
         // Rebuild the history list
-        history.forEach(task => renderTask(task.text, task.time, true));
+        history.forEach(task => renderTask(task.text, task.time, true, task.priority));
     }
 }
 
