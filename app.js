@@ -3,6 +3,7 @@ const addButton = document.getElementById('add-btn');
 const todoList = document.getElementById('todo-list');
 const historyList = document.getElementById('history-list');
 const prioritySelect = document.getElementById('priority-select');
+const searchInput = document.getElementById('search-input');
 
 function addTask() {
     if (inputField.value.trim() !== "") {
@@ -190,3 +191,21 @@ inputField.addEventListener('keypress', function (e) {
         addTask();
     }
 });
+// LIVE SEARCH FILTERING
+function filterTasks() {
+    const query = searchInput.value.toLowerCase();
+    const allTasks = document.querySelectorAll('.task-item');
+
+    allTasks.forEach(task => {
+        const text = task.querySelector('.task-text').textContent.toLowerCase();
+        const notes = task.querySelector('.task-notes').value.toLowerCase();
+
+        if (text.includes(query) || notes.includes(query)) {
+            task.classList.remove('hidden');
+        } else {
+            task.classList.add('hidden');
+        }
+    });
+}
+
+searchInput.addEventListener('input', filterTasks);
