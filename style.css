@@ -113,12 +113,17 @@ li {
     background: var(--card-bg);
     border: 1px solid #f1f5f9;
     display: flex;
+    flex-direction: column;
+    list-style-type: none !important;
+    user-select: none;
+    cursor: pointer;
+}
+
+.task-item-main {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    list-style-type: none !important;
-    /* Forces removal of dots */
-    user-select: none;
-    /* Prevents that messy purple highlight when clicking fast */
+    width: 100%;
 }
 
 li:hover {
@@ -263,6 +268,43 @@ ul:not(:has(li)) {
 .prio-low .prio-badge {
     background: #d1fae5;
     color: #10b981;
+}
+
+/* DETAILS SECTION */
+.task-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+}
+
+.expanded .task-details {
+    max-height: 200px;
+    margin-top: 16px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+}
+
+.task-notes {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: none;
+    background: #f8fafc;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s;
+    line-height: 1.5;
+}
+
+.task-notes:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.05);
 }
 
 /* Ensure ::selection works for the whole app theme */

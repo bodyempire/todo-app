@@ -10,7 +10,7 @@ function addTask() {
         const time = now.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         const priority = prioritySelect.value;
 
-        renderTask(inputField.value, time, false, priority);
+        renderTask(inputField.value, time, false, priority, "");
         saveData();
         inputField.value = '';
     }
@@ -26,7 +26,8 @@ function saveData() {
             text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
             done: false,
-            priority: li.dataset.priority
+            priority: li.dataset.priority,
+            notes: li.querySelector('.task-notes').value
         });
     });
 
@@ -36,7 +37,8 @@ function saveData() {
             text: li.querySelector('.task-text').textContent,
             time: li.querySelector('.timestamp').textContent,
             done: true,
-            priority: li.dataset.priority
+            priority: li.dataset.priority,
+            notes: li.querySelector('.task-notes').value
         });
     });
 
@@ -44,8 +46,9 @@ function saveData() {
     localStorage.setItem('todosData', JSON.stringify({ todos, history }));
 }
 
-function renderTask(text, time, isDone, priority = 'medium') {
+function renderTask(text, time, isDone, priority = 'medium', notes = "") {
     const newTask = document.createElement('li');
+    newTask.className = 'task-item'; // Added for easier targeting
     if (isDone) newTask.classList.add('completed');
 
     // PRIORITY CLASS & DATA
@@ -119,13 +122,42 @@ function renderTask(text, time, isDone, priority = 'medium') {
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'x';
     deleteBtn.className = 'delete-btn';
-    deleteBtn.addEventListener('click', function () {
+    deleteBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); // Prevents expanding when deleting
         newTask.remove();
         saveData();
     });
 
-    newTask.appendChild(contentWrapper);
-    newTask.appendChild(deleteBtn);
+    // WRAP MAIN CONTENT
+    const mainWrapper = document.createElement('div');
+    mainWrapper.className = 'task-item-main';
+    mainWrapper.appendChild(contentWrapper);
+    mainWrapper.appendChild(deleteBtn);
+
+    newTask.appendChild(mainWrapper);
+
+    // DETAILS (NOTES) SECTION
+    const detailsSection = document.createElement('div');
+    detailsSection.className = 'task-details';
+
+    const notesArea = document.createElement('textarea');
+    notesArea.placeholder = 'Add notes here...';
+    notesArea.className = 'task-notes';
+    notesArea.value = notes;
+
+    // Save notes when they change
+    notesArea.addEventListener('input', saveData);
+    // Don't toggle expansion when clicking inside the textarea
+    notesArea.addEventListener('click', (e) => e.stopPropagation());
+
+    detailsSection.appendChild(notesArea);
+    newTask.appendChild(detailsSection);
+
+    // TOGGLE EXPANSION
+    newTask.addEventListener('click', function () {
+        // Toggle the 'expanded' class
+        newTask.classList.toggle('expanded');
+    });
 
     // Put it in the right list!
     if (isDone) {
@@ -141,10 +173,10 @@ function loadData() {
         const { todos, history } = JSON.parse(savedData);
 
         // Rebuild the todo list
-        todos.forEach(task => renderTask(task.text, task.time, false, task.priority));
+        todos.forEach(task => renderTask(task.text, task.time, false, task.priority, task.notes));
 
         // Rebuild the history list
-        history.forEach(task => renderTask(task.text, task.time, true, task.priority));
+        history.forEach(task => renderTask(task.text, task.time, true, task.priority, task.notes));
     }
 }
 
