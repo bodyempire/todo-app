@@ -15,6 +15,10 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => console.error('❌ MongoDB connection error:', err));
 
+
+const taskRoutes = require('./routes/tasks');
+app.use('/api/tasks', taskRoutes);
+
 app.get('/', (req, res) => {
     res.send('Todo App API is running...');
 });
